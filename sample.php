@@ -281,7 +281,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <footer class="footer mt-auto py-3 bg-light">
     <div class="container text-center">
-        <span class="text-muted">Copyright © 2024 [obcrights]</span><br>
+        <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
         <span class="text-muted">Powered by jobs.obcrights</span>
     </div>
 </footer>

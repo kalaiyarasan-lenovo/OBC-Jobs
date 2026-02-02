@@ -1,8 +1,6 @@
 <?php
-$servername = "localhost";
-$username = "filter";
-$password = "Filter@2024";
-$dbname = "filter";
+session_start();
+include("config/config_db.php");
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -267,7 +265,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </section>
 <footer class="footer mt-auto py-3 bg-light">
     <div class="container text-center">
-        <span class="text-muted">Copyright © 2024 [obcrights]</span><br>
+        <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
         <span class="text-muted">Powered by jobs.obcrights</span>
     </div>
 </footer>

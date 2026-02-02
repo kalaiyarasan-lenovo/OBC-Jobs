@@ -1,9 +1,6 @@
 <?php
-$servername = "localhost";
-$username = "filter";
-$password = "Filter@2024";
-$dbname = "filter";
-
+session_start();
+include("config/config_db.php");
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
