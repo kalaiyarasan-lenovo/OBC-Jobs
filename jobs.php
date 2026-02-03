@@ -28,7 +28,24 @@ if (isset($_POST['submit'])) {
 
 if (count($conditions) > 0) {
     $query .= " WHERE " . implode(' AND ', $conditions);
+
+    // Update total vacancies based on filter
+    $filteredTotalQuery = "SELECT SUM(vacancies) AS total_vacancies FROM records WHERE " . implode(' AND ', $conditions);
+    $filteredTotalResult = $conn->query($filteredTotalQuery);
+    if ($filteredTotalResult) {
+        $filteredTotalRow = $filteredTotalResult->fetch_assoc();
+        $totalVacancies = $filteredTotalRow['total_vacancies'] ?? 0;
+    }
 }
+
+// Order by deadline: 0-4 days remaining first, then other future, then past
+$query .= " ORDER BY 
+    CASE 
+        WHEN to_date >= CURDATE() AND DATEDIFF(to_date, CURDATE()) <= 4 THEN 1
+        WHEN to_date >= CURDATE() THEN 2
+        ELSE 3
+    END ASC, 
+    to_date ASC";
 
 $result = $conn->query($query);
 ?>
@@ -130,10 +147,18 @@ $result = $conn->query($query);
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-    $(function() {
+    $(document).ready(function() {
         $("#from_date").datepicker();
         $("#to_date").datepicker();
-        $('#jobsTable').DataTable();
+
+        if ($.fn.DataTable.isDataTable('#jobsTable')) {
+            $('#jobsTable').DataTable().destroy();
+        }
+
+        $('#jobsTable').DataTable({
+            "order": [],
+            "retrieve": true
+        });
     });
 
     function deleteRecord(id) {
@@ -196,14 +221,14 @@ $result = $conn->query($query);
                         <label for="type">Job Type</label>
                         <select name="type" id="type" class="form-control">
                             <option value="">Select</option>
-                            <option value="Central Govt Jobs">Central Govt Jobs</option>
-                            <option value="State Govt Jobs">State Govt Jobs</option>
-                            <option value="Bank Jobs">Bank Jobs</option>
+                            <option value="Central Govt Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'Central Govt Jobs') echo 'selected'; ?>>Central Govt Jobs</option>
+                            <option value="State Govt Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'State Govt Jobs') echo 'selected'; ?>>State Govt Jobs</option>
+                            <option value="Bank Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'Bank Jobs') echo 'selected'; ?>>Bank Jobs</option>
                         </select>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="age">Age</label>
-                        <input type="number" name="age" id="age" class="form-control">
+                        <input type="number" name="age" id="age" class="form-control" value="<?php echo isset($_POST['age']) ? htmlspecialchars($_POST['age']) : ''; ?>">
                     </div>
                     <div class="form-group col-md-4">
                         <button type="submit" name="submit" class="btn btn-red btn-block">Filter</button>

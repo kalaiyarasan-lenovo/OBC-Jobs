@@ -3,7 +3,13 @@ session_start();
 include("config/config_db.php");
 
 // Fetch central government jobs from the database
-$query = "SELECT * FROM records WHERE type = 'Central Govt Jobs'";
+$query = "SELECT * FROM records WHERE type = 'Central Govt Jobs' ORDER BY 
+    CASE 
+        WHEN to_date >= CURDATE() AND DATEDIFF(to_date, CURDATE()) <= 4 THEN 1
+        WHEN to_date >= CURDATE() THEN 2
+        ELSE 3
+    END ASC, 
+    to_date ASC";
 $result = $conn->query($query);
 
 // Calculate total vacancies for Central Govt Jobs
@@ -77,7 +83,7 @@ $totalVacancies = $totalVacanciesRow['total_vacancies'];
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
     $(function() {
-        $('#jobsTable').DataTable();
+        $('#jobsTable').DataTable({"order": []});
     });
 
     function deleteRecord(id) {

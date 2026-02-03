@@ -117,7 +117,7 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
     $(function() {
         $("#from_date").datepicker();
         $("#to_date").datepicker();
-        $('#jobsTable').DataTable();
+        $('#jobsTable').DataTable({"order": []});
     });
 
     function deleteRecord(id) {
