@@ -158,7 +158,7 @@ $result = $conn->query($query);
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                    <a class="nav-link" href="home.php">Home</a>
+                    <a class="nav-link" href="index">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="https://obcrights.org/">About</a>
@@ -177,7 +177,7 @@ $result = $conn->query($query);
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="save_contact.php">Contact <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="save_contact">Contact <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link blink join-us-box" href="https://chat.whatsapp.com/Dj6ZIz2VicOHKHaDyvbSxi" target="_blank">
@@ -248,7 +248,7 @@ $result = $conn->query($query);
                         echo "<td>" . htmlspecialchars($row['age_limits']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['to_date']) . "</td>";
                         echo "<td>";
-                        echo "<a href='job_details.php?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "' class='btn btn-red btn-sm'>View</a>";
+                        echo "<a href='job_details?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "' class='btn btn-red btn-sm'>View</a>";
                         echo "</td>";
                         echo "</tr>";
                     }

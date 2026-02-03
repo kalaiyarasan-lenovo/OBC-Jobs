@@ -123,7 +123,7 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="index">Home</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="about" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">About</a>
@@ -137,8 +137,8 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
                 <li class="nav-item">
                     <a class="nav-link" href="https://jobs.obcrights.org/Blogs/">Blogs</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="privatejobportal.php">Private Job Portals</a></li>
-                <li class="nav-item"><a class="nav-link" href="save_contact.php">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="privatejobportal">Private Job Portals</a></li>
+                <li class="nav-item"><a class="nav-link" href="save_contact">Contact</a></li>
                 <li class="nav-item">
                     <a class="nav-link join-us-box" href="https://chat.whatsapp.com/Dj6ZIz2VicOHKHaDyvbSxi"
                         target="_blank">
@@ -153,13 +153,13 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
     <div class="container">
         <div class="row mt-4 justify-content-center">
             <div class="col-md-4 text-center">
-                <a href="central_gov_jobs.php" class="btn btn-light-gray btn-block">
+                <a href="central_gov_jobs" class="btn btn-light-gray btn-block">
                     <b>Total Central Govt Vacancies:
                         <span><?php echo htmlspecialchars($totalCentralVacancies); ?></span></b>
                 </a>
             </div>
             <div class="col-md-4 text-center">
-                <a href="state_jobs.php" class="btn btn-light-gray btn-block">
+                <a href="state_jobs" class="btn btn-light-gray btn-block">
                     <b>Total State Govt Vacancies:
                         <span><?php echo htmlspecialchars($totalStateVacancies); ?></span></b>
                 </a>
@@ -192,7 +192,7 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
                             <td><?= htmlspecialchars($row['type']) ?></td>
                             <td><?= htmlspecialchars($row['age_limits']) ?></td>
                             <td><?= htmlspecialchars($row['to_date']) ?></td>
-                            <td><a href="job_details.php?id=<?= htmlspecialchars($row['id']) ?>"
+                            <td><a href="job_details?id=<?= htmlspecialchars($row['id']) ?>"
                                     class="btn btn-red btn-sm">View</a></td>
                         </tr>
                     <?php } ?>

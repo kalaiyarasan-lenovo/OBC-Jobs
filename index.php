@@ -321,7 +321,7 @@ $result = $conn->query($query);
         </a>
 
         <!-- Blinking Subscribe button (Desktop only) -->
-        <a href="subscribe.php" class="btn btn-danger blink ml-2 d-none d-lg-inline-block" style="font-weight:bold;">
+        <a href="subscribe" class="btn btn-danger blink ml-2 d-none d-lg-inline-block" style="font-weight:bold;">
             Subscribe
         </a>
 
@@ -334,7 +334,7 @@ $result = $conn->query($query);
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="home.php">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="index">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="about" role="button" data-toggle="dropdown"
@@ -352,10 +352,10 @@ $result = $conn->query($query);
                     <a class="nav-link" href="https://jobs.obcrights.org/Blogs/">Blogs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="privatejobportal.php">Private Job Portals</a>
+                    <a class="nav-link" href="privatejobportal">Private Job Portals</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="save_contact.php">Contact <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="save_contact">Contact <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link join-us-box" href="https://chat.whatsapp.com/Dj6ZIz2VicOHKHaDyvbSxi"
@@ -371,7 +371,7 @@ $result = $conn->query($query);
     <div class="container">
         <!-- Mobile Subscribe Button -->
         <div class="mobile-subscribe-container">
-            <a href="subscribe.php" class="btn btn-danger blink" style="font-weight:bold; padding: 10px 30px; border-radius: 8px;">
+            <a href="subscribe" class="btn btn-danger blink" style="font-weight:bold; padding: 10px 30px; border-radius: 8px;">
                  Subscribe
             </a>
         </div>
@@ -383,7 +383,7 @@ $result = $conn->query($query);
             </div>
         </div>
         <div class="row mt-4">
-            <form class="form-horizontal w-100" action="jobs.php" method="POST">
+            <form class="form-horizontal w-100" action="jobs" method="POST">
                 <div class="form-row align-items-end">
                     <div class="form-group col-md-4">
                         <label for="type">Job Type</label>
@@ -408,13 +408,13 @@ $result = $conn->query($query);
         <!-- Job Category Buttons -->
         <div class="row mt-3">
             <div class="col-md-4 text-center">
-                <a href="government_jobs.php" class="btn btn-yellow btn-block">Government Jobs</a>
+                <a href="government_jobs" class="btn btn-yellow btn-block">Government Jobs</a>
             </div>
             <div class="col-md-4 text-center">
-                <a href="bank_jobs.php" class="btn btn-yellow btn-block">Bank Jobs</a>
+                <a href="bank_jobs" class="btn btn-yellow btn-block">Bank Jobs</a>
             </div>
             <div class="col-md-4 text-center">
-                <a href="private_jobs.php" class="btn btn-yellow btn-block">Private Jobs</a>
+                <a href="privatejobportal" class="btn btn-yellow btn-block">Private Jobs</a>
             </div>
         </div>
 
@@ -447,7 +447,7 @@ $result = $conn->query($query);
                             echo "<td>" . htmlspecialchars($row['age_limits']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['to_date']) . "</td>";
                             echo "<td>";
-                            echo "<a href='job_details.php?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "' class='btn btn-red btn-sm'>View</a>";
+                            echo "<a href='job_details?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "' class='btn btn-red btn-sm'>View</a>";
                             echo "</td>";
                             echo "</tr>";
                         }

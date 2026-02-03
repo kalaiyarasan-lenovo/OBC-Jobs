@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
-$username = "filter";
-$password = "Filter@2024";
+$username = "root";
+$password = "";
 $dbname = "filter";
 
 // Create connection

@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               VALUES ('$name', '$vacancies', '$description', '$place_of_posting', '$education_qualification', '$selection_process', '$app_fee', '$type', '$age_limits', '$start_age', '$end_age', '$from_date', '$to_date', '$official_website', '$how_to_apply')";
 
     if (mysqli_query($conn, $query)) {
-        header("Location: index.php");
+        header("Location: index");
     } else {
         echo "Error: " . $query . "<br>" . mysqli_error($conn);
     }
