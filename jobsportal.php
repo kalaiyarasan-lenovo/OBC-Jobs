@@ -30,6 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -132,64 +133,67 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: black;
             margin-top: 5px;
         }
+
         .nav-item.dropdown {
-    position: relative;
-}
+            position: relative;
+        }
 
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    min-width: 200px;
-    z-index: 1000;
-}
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            min-width: 200px;
+            z-index: 1000;
+        }
 
-.dropdown-item {
-    padding: 10px 20px;
-    text-decoration: none;
-    color: #000;
-    display: block;
-}
+        .dropdown-item {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #000;
+            display: block;
+        }
 
-.dropdown-item:hover {
-    background-color: #f1f1f1;
-}
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
 
-.nav-item.dropdown:hover .dropdown-menu {
-    display: block;
-}
-
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+        }
     </style>
 </head>
+
 <body>
-<!-- Navbar with Logo -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="https://obcrights.org/">
-        <img src="obclogo.jpg" width="80" height="50" class="d-inline-block align-top" alt="" loading="lazy">
-    </a>
-    <h3 class="navbar-center font-weight-bold">Job Portal</h3>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="home.php">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="about.php">About</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="blogs.php">Blogs</a>
-            </li>
-            <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="privateJobsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <!-- Navbar with Logo -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="https://obcrights.org/">
+            <img src="obclogo.jpg" width="80" height="50" class="d-inline-block align-top" alt="" loading="lazy">
+        </a>
+        <h3 class="navbar-center font-weight-bold">Job Portal</h3>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://jobs.obcrights.org/Blogs/">Blogs</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="privateJobsDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Jobs
                     </a>
                     <div class="dropdown-menu" aria-labelledby="privateJobsDropdown">
@@ -198,57 +202,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <a class="dropdown-item" href="privatejob.php">Private Job</a>
                     </div>
                 </li>
-            <li class="nav-item">
-                <a class="nav-link" href="save_contact.php">Contact</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link join-us-box" href="https://chat.whatsapp.com/Dj6ZIz2VicOHKHaDyvbSxi" target="_blank">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-            </li>
-        </ul>
+                <li class="nav-item">
+                    <a class="nav-link" href="save_contact">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link join-us-box" href="https://chat.whatsapp.com/Dj6ZIz2VicOHKHaDyvbSxi"
+                        target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="image-container">
+        <img src="images/Jobs.png" alt="Bank">
     </div>
-</nav>
 
-<div class="image-container">
-    <img src="images/Jobs.png" alt="Bank">
-</div>
-
-<div class="container px-4">
-    <div class="row gx-5">
-        <!-- First Row: Naukri and LinkedIn -->
-        <div class="col">
-            <div class="p-3 border bg-light">
-                <img class="card-img-center" src="images/Naukri.png" alt="Naukri.com">
-                <div class="card-body">
-                    <h5 class="card-title">Naukri.com</h5>
-                    <p class="card-text">Naukri is an India-based job portal used by both freshers and experienced candidates for applying to jobs.</p>
-                    <ul>
-                        <li>Naukri is available for candidates in web and mobile application form.</li>
-                        <li>It's a free application.</li>
-                    </ul>
-                    <!-- <h5 class="card-title">How to utilize Naukri!!!</h5>
+    <div class="container px-4">
+        <div class="row gx-5">
+            <!-- First Row: Naukri and LinkedIn -->
+            <div class="col">
+                <div class="p-3 border bg-light">
+                    <img class="card-img-center" src="images/Naukri.png" alt="Naukri.com">
+                    <div class="card-body">
+                        <h5 class="card-title">Naukri.com</h5>
+                        <p class="card-text">Naukri is an India-based job portal used by both freshers and experienced
+                            candidates for applying to jobs.</p>
+                        <ul>
+                            <li>Naukri is available for candidates in web and mobile application form.</li>
+                            <li>It's a free application.</li>
+                        </ul>
+                        <!-- <h5 class="card-title">How to utilize Naukri!!!</h5>
                     <ul>
                         <li>Make sure your profile is 100% complete and has a HIGH performance score before applying for jobs.</li>
                         <li>Add key skills as per industry requirements.</li>
                         <li>Weekly profile updates are recommended.</li>
                     </ul> -->
-                    <div class="button-container">
-                        <a href="https://www.naukri.com/" class="btn btn-primary">View</a>
+                        <div class="button-container">
+                            <a href="https://www.naukri.com/" class="btn btn-primary">View</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col">
-            <div class="p-3 border bg-light">
-                <img class="card-img-center" src="images/linkedin.jpeg" alt="LinkedIn">
-                <div class="card-body">
-                    <h5 class="card-title">LinkedIn</h5>
-                    <p class="card-text">LinkedIn is a professional networking platform that also offers job listings. It allows you to create a professional profile and connect with recruiters and professionals in your field.</p>
-                    <ul>
-                        <li>Used by Entrepreneurs, Job seekers, Influencers, Companies, Freelancers, etc.</li>
-                    </ul>
-                    <!-- <div class="image-container text-center">
+            <div class="col">
+                <div class="p-3 border bg-light">
+                    <img class="card-img-center" src="images/linkedin.jpeg" alt="LinkedIn">
+                    <div class="card-body">
+                        <h5 class="card-title">LinkedIn</h5>
+                        <p class="card-text">LinkedIn is a professional networking platform that also offers job
+                            listings. It allows you to create a professional profile and connect with recruiters and
+                            professionals in your field.</p>
+                        <ul>
+                            <li>Used by Entrepreneurs, Job seekers, Influencers, Companies, Freelancers, etc.</li>
+                        </ul>
+                        <!-- <div class="image-container text-center">
                         <div class="image-item">
                             <img class="card-img-center" src="images/connections.png" alt="Connections" style="width: 150px; height: auto; margin: 10px;">
                             <h6>Connections</h6>
@@ -266,103 +274,108 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <h6>Insights</h6>
                         </div>
                     </div> -->
-                    <div class="button-container text-center mt-3">
-                        <a href="https://www.linkedin.com/feed/" class="btn btn-primary">View</a>
+                        <div class="button-container text-center mt-3">
+                            <a href="https://www.linkedin.com/feed/" class="btn btn-primary">View</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <br>
-    <div class="row gx-5">
-        <!-- Second Row: Indeed, Glassdoor, and Monster -->
-        <div class="col">
-            <div class="p-3 border bg-light">
-                <img class="card-img-center" src="images/indeed.png" alt="Indeed">
-                <div class="card-body">
-                    <h5 class="card-title">Indeed</h5>
-                    <p class="card-text">Indeed is a global job search platform that allows job seekers to search for jobs, post resumes, and research companies.</p>
-                    <div class="button-container">
-                        <a href="https://in.indeed.com/?r=us" class="btn btn-primary">View</a>
+        <br>
+        <div class="row gx-5">
+            <!-- Second Row: Indeed, Glassdoor, and Monster -->
+            <div class="col">
+                <div class="p-3 border bg-light">
+                    <img class="card-img-center" src="images/indeed.png" alt="Indeed">
+                    <div class="card-body">
+                        <h5 class="card-title">Indeed</h5>
+                        <p class="card-text">Indeed is a global job search platform that allows job seekers to search
+                            for jobs, post resumes, and research companies.</p>
+                        <div class="button-container">
+                            <a href="https://in.indeed.com/?r=us" class="btn btn-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="p-3 border bg-light">
+                    <img class="card-img-center" src="images/glassdoor.png" alt="Glassdoor">
+                    <div class="card-body">
+                        <h5 class="card-title">Glassdoor</h5>
+                        <p class="card-text">Glassdoor is a job search and review site that also provides company
+                            reviews, CEO approval ratings, salary reports, interview reviews, and more.</p>
+                        <div class="button-container">
+                            <a href="https://www.glassdoor.co.in/Community/index.htm" class="btn btn-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="p-3 border bg-light">
+                    <img class="card-img-center" src="images/monster.png" alt="Monster">
+                    <div class="card-body">
+                        <h5 class="card-title">Monster</h5>
+                        <p class="card-text">Monster is a global online employment solution for people seeking jobs and
+                            the employers who need great people.</p>
+                        <div class="button-container">
+                            <a href="https://www.foundit.in/" class="btn btn-primary">View</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="p-3 border bg-light">
-                <img class="card-img-center" src="images/glassdoor.png" alt="Glassdoor">
-                <div class="card-body">
-                    <h5 class="card-title">Glassdoor</h5>
-                    <p class="card-text">Glassdoor is a job search and review site that also provides company reviews, CEO approval ratings, salary reports, interview reviews, and more.</p>
-                    <div class="button-container">
-                        <a href="https://www.glassdoor.co.in/Community/index.htm" class="btn btn-primary">View</a>
+        <div class="row gx-5">
+            <!-- First Row: Naukri and LinkedIn -->
+            <div class="col">
+                <div class="p-3 border bg-light">
+                    <img class="card-img-center" src="images/superset.png" alt="Naukri.com">
+                    <div class="card-body">
+                        <h5 class="card-title">Superset</h5>
+                        <p class="card-text">Superset is an advanced job portal platform designed to
+                            streamline campus recruitment processes. It connects students, universities,
+                            and employers on a single platform, enabling seamless application management,
+                            interview scheduling, and job matching. Superset simplifies the recruitment workflow, making
+                            it
+                            more efficient and accessible for both job seekers and recruiters.</p>
+                        <div class="button-container">
+                            <a href="https://www.joinsuperset.com/" class="btn btn-primary">View</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col">
-            <div class="p-3 border bg-light">
-                <img class="card-img-center" src="images/monster.png" alt="Monster">
-                <div class="card-body">
-                    <h5 class="card-title">Monster</h5>
-                    <p class="card-text">Monster is a global online employment solution for people seeking jobs and the employers who need great people.</p>
-                    <div class="button-container">
-                        <a href="https://www.foundit.in/" class="btn btn-primary">View</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row gx-5">
-        <!-- First Row: Naukri and LinkedIn -->
-        <div class="col">
-            <div class="p-3 border bg-light">
-                <img class="card-img-center" src="images/superset.png" alt="Naukri.com">
-                <div class="card-body">
-                    <h5 class="card-title">Superset</h5>
-                    <p class="card-text">Superset is an advanced job portal platform designed to 
-                        streamline campus recruitment processes. It connects students, universities, 
-                        and employers on a single platform, enabling seamless application management, 
-                        interview scheduling, and job matching. Superset simplifies the recruitment workflow, making it 
-                        more efficient and accessible for both job seekers and recruiters.</p>
-                    <div class="button-container">
-                        <a href="https://www.joinsuperset.com/" class="btn btn-primary">View</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="p-3 border bg-light">
-                <img class="card-img-center" src="images/other_platforms.png" alt="LinkedIn">
-                <div class="card-body">
-                    <h5 class="card-title">Other Platforms</h5>
-                    <ul>
-                        <li>Shine.com</li>
-                        <li>Freshersworld</li>
-                        <li>Timesjobs</li>
-                        <li>Simple Google Search</li>
-                        <li>Companies career portal</li>
-                        <li>Simplyhired</li>
-                    </ul>
-                    
-                    <div class="button-container text-center mt-3">
-                        <a href="https://factohr.com/job-portals-in-india/" class="btn btn-primary">View</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+            <div class="col">
+                <div class="p-3 border bg-light">
+                    <img class="card-img-center" src="images/other_platforms.png" alt="LinkedIn">
+                    <div class="card-body">
+                        <h5 class="card-title">Other Platforms</h5>
+                        <ul>
+                            <li>Shine.com</li>
+                            <li>Freshersworld</li>
+                            <li>Timesjobs</li>
+                            <li>Simple Google Search</li>
+                            <li>Companies career portal</li>
+                            <li>Simplyhired</li>
+                        </ul>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-<footer class="footer mt-auto py-3 bg-light">
-    <div class="container text-center">
-        <span class="text-muted">Copyright © 2024 [obcrights]</span><br>
-        <span class="text-muted">Powered by jobs.obcrights</span>
+                        <div class="button-container text-center mt-3">
+                            <a href="https://factohr.com/job-portals-in-india/" class="btn btn-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
+            <span class="text-muted">Powered by jobs.obcrights</span>
+        </div>
+    </footer>
 </body>
+
 </html>

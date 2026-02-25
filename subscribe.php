@@ -88,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="alert alert-success text-center">
                     <i class="fas fa-check-circle fa-2x mb-2 d-block"></i>
                     <?php echo $success_message; ?>
-                    <a href="home.php" class="btn btn-primary mt-3">Back to Home</a>
+                    <a href="index" class="btn btn-primary mt-3">Back to Home</a>
                 </div>
             <?php else: ?>
                 <!-- Error Message -->
@@ -114,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php endif; ?>
 
             <div class="text-center mt-4">
-                <a href="home.php" class="btn btn-outline-secondary">← Back to Home</a>
+                <a href="index" class="btn btn-outline-secondary">← Back to Home</a>
             </div>
         </div>
     </div>

@@ -3,7 +3,7 @@ session_start();
 include("config/config_db.php");
 
 if (!isset($_SESSION['login_user']) || $_SESSION['login_user'] != 'admin') {
-    header("Location: index.php");
+    header("Location: index");
     exit();
 }
 

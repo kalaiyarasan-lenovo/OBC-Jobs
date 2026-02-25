@@ -1,8 +1,6 @@
 <?php
-$servername = "localhost";
-$username = "filter";
-$password = "Filter@2024";
-$dbname = "filter";
+session_start();
+include("config/config_db.php");
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -205,7 +203,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                    <a class="nav-link" href="home.php">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="index">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="about" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -222,10 +220,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <a class="nav-link" href="https://jobs.obcrights.org/Blogs/">Blogs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="privatejobportal.php">Private Job Portals</a>
+                    <a class="nav-link" href="privatejobportal">Private Job Portals</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="save_contact.php">Contact <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="save_contact">Contact <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link join-us-box" href="https://chat.whatsapp.com/Dj6ZIz2VicOHKHaDyvbSxi" target="_blank">

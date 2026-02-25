@@ -1,0 +1,10 @@
+Options +FollowSymLinks -MultiViews
+RewriteEngine On
+
+# Redirect home to index
+RewriteRule ^home$ index [L,R=301]
+
+# Map clean URLs to .php files internally
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [NC,L]

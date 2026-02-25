@@ -4,6 +4,30 @@ include("config/config_db.php");
 
 // Fetch government jobs (both central and state) from the database
 $query = "SELECT * FROM records WHERE type IN ('Central Govt Jobs', 'State Govt Jobs')";
+$conditions = array();
+
+if (isset($_POST['submit'])) {
+    if (!empty($_POST['type'])) {
+        $type = $conn->real_escape_string($_POST['type']);
+        $conditions[] = "type = '$type'";
+    }
+    if (!empty($_POST['age'])) {
+        $age = intval($_POST['age']);
+        $conditions[] = "$age BETWEEN start_age AND end_age";
+    }
+}
+
+if (count($conditions) > 0) {
+    $query .= " AND " . implode(' AND ', $conditions);
+}
+
+$query .= " ORDER BY 
+    CASE 
+        WHEN to_date >= CURDATE() AND DATEDIFF(to_date, CURDATE()) <= 4 THEN 1
+        WHEN to_date >= CURDATE() THEN 2
+        ELSE 3
+    END ASC, 
+    to_date ASC";
 $result = $conn->query($query);
 
 // Fetch total vacancies for Central Govt Jobs
@@ -21,6 +45,7 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -36,19 +61,23 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
             border-color: red;
             color: white;
         }
+
         .btn-red:hover {
             background-color: gold;
             border-color: red;
         }
+
         .btn-yellow {
             background-color: orange;
             border-color: goldenrod;
             color: black;
         }
+
         .btn-yellow:hover {
             background-color: darkorange;
             border-color: darkorange;
         }
+
         .navbar-center {
             position: absolute;
             left: 50%;
@@ -57,27 +86,33 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
             font-family: monospace;
             color: azure;
         }
+
         .nav-item {
             font-weight: bold;
         }
+
         .nav-item.dropdown:hover .dropdown-menu {
             display: block;
         }
+
         .btn-light-gray {
             background-color: lightgray;
             border-color: gray;
             color: black;
         }
+
         .btn-light-gray:hover {
             background-color: darkgray;
             border-color: darkgray;
         }
+
         .join-us-box i {
             margin-left: 5px;
             font-size: 40px;
             font-weight: bolder;
             color: #25D366;
         }
+
         .join-us-box i:hover {
             color: white;
         }
@@ -87,8 +122,14 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        $(function() {
-            $('#jobsTable').DataTable();
+        $(document).ready(function() {
+            if ($.fn.DataTable.isDataTable('#jobsTable')) {
+                $('#jobsTable').DataTable().destroy();
+            }
+            $('#jobsTable').DataTable({
+                "order": [],
+                "retrieve": true
+            });
         });
 
         function deleteRecord(id) {
@@ -98,6 +139,7 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
         }
     </script>
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -105,14 +147,16 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
             <img src="obclogo.jpg" width="80" height="50" class="d-inline-block align-top" alt="" loading="lazy">
         </a>
         <h3 class="navbar-center font-weight-bold">Government Jobs</h3>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="index">Home</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="about" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">About</a>
+                    <a class="nav-link dropdown-toggle" href="#" id="about" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">About</a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="https://obcrights.org/about-sfrbc/">Story</a>
                         <a class="dropdown-item" href="https://obcrights.org/vision/">Vision</a>
@@ -120,11 +164,14 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
                         <a class="dropdown-item" href="https://obcrights.org/what-we-do/">What We Do</a>
                     </div>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="blogs.php">Blogs</a></li>
-                <li class="nav-item"><a class="nav-link" href="privatejobportal.php">Private Job Portals</a></li>
-                <li class="nav-item"><a class="nav-link" href="save_contact.php">Contact</a></li>
                 <li class="nav-item">
-                    <a class="nav-link join-us-box" href="https://chat.whatsapp.com/Dj6ZIz2VicOHKHaDyvbSxi" target="_blank">
+                    <a class="nav-link" href="https://jobs.obcrights.org/Blogs/">Blogs</a>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="privatejobportal">Private Job Portals</a></li>
+                <li class="nav-item"><a class="nav-link" href="save_contact">Contact</a></li>
+                <li class="nav-item">
+                    <a class="nav-link join-us-box" href="https://chat.whatsapp.com/Dj6ZIz2VicOHKHaDyvbSxi"
+                        target="_blank">
                         <i class="fab fa-whatsapp"></i>
                     </a>
                 </li>
@@ -132,17 +179,46 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
         </div>
     </nav>
 
-    <!-- Display Total Vacancies -->
     <div class="container">
+        <!-- Filter Form -->
+        <div class="row mt-4">
+            <form class="form-horizontal w-100" action="government_jobs" method="POST">
+                <div class="form-row align-items-end justify-content-center">
+                    <div class="form-group col-md-4">
+                        <label for="type">Job Type</label>
+                        <select name="type" id="type" class="form-control">
+                            <option value="">All Government Jobs</option>
+                            <option value="Central Govt Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'Central Govt Jobs') echo 'selected'; ?>>Central Govt Jobs</option>
+                            <option value="State Govt Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'State Govt Jobs') echo 'selected'; ?>>State Govt Jobs</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="age">Age</label>
+                        <input type="number" name="age" id="age" class="form-control" value="<?php echo isset($_POST['age']) ? htmlspecialchars($_POST['age']) : ''; ?>">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <button type="submit" name="submit" class="btn btn-red btn-block">Filter</button>
+                    </div>
+                    <?php if (isset($_POST['submit'])): ?>
+                    <div class="form-group col-md-2">
+                        <a href="government_jobs" class="btn btn-secondary btn-block">Reset</a>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </form>
+        </div>
+
         <div class="row mt-4 justify-content-center">
             <div class="col-md-4 text-center">
-                <a href="central_gov_jobs.php" class="btn btn-light-gray btn-block">
-                    <b>Total Central Govt Vacancies: <span><?php echo htmlspecialchars($totalCentralVacancies); ?></span></b>
+                <a href="central_gov_jobs" class="btn btn-light-gray btn-block">
+                    <b>Total Central Govt Vacancies:
+                        <span><?php echo htmlspecialchars($totalCentralVacancies); ?></span></b>
                 </a>
             </div>
             <div class="col-md-4 text-center">
-                <a href="state_jobs.php" class="btn btn-light-gray btn-block">
-                    <b>Total State Govt Vacancies: <span><?php echo htmlspecialchars($totalStateVacancies); ?></span></b>
+                <a href="state_jobs" class="btn btn-light-gray btn-block">
+                    <b>Total State Govt Vacancies:
+                        <span><?php echo htmlspecialchars($totalStateVacancies); ?></span></b>
                 </a>
             </div>
         </div>
@@ -173,12 +249,20 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
                             <td><?= htmlspecialchars($row['type']) ?></td>
                             <td><?= htmlspecialchars($row['age_limits']) ?></td>
                             <td><?= htmlspecialchars($row['to_date']) ?></td>
-                            <td><a href="job_details.php?id=<?= htmlspecialchars($row['id']) ?>" class="btn btn-red btn-sm">View</a></td>
+                            <td><a href="job_details?id=<?= htmlspecialchars($row['id']) ?>"
+                                    class="btn btn-red btn-sm">View</a></td>
                         </tr>
                     <?php } ?>
                 </tbody>
             </table>
         </div>
     </div>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
+            <span class="text-muted">Powered by jobs.obcrights</span>
+        </div>
+    </footer>
 </body>
+
 </html>

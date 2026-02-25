@@ -11,7 +11,7 @@ if (isset($_GET['id'])) {
 
     if ($stmt->execute()) {
         // Redirect back to the main page after deletion
-        header("Location: index.php");
+        header("Location: index");
     } else {
         echo "Error deleting record: " . $conn->error;
     }

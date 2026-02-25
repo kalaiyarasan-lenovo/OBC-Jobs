@@ -33,8 +33,24 @@ if (isset($_POST['submit'])) {
 
 if (count($conditions) > 0) {
     $query .= " WHERE " . implode(' AND ', $conditions);
+    
+    // Update total vacancies based on filter
+    $totalVacanciesQuery = "SELECT SUM(vacancies) AS total_vacancies FROM records WHERE " . implode(' AND ', $conditions);
+    $totalVacanciesResult = $conn->query($totalVacanciesQuery);
+    if ($totalVacanciesResult) {
+        $totalVacanciesRow = $totalVacanciesResult->fetch_assoc();
+        $totalVacancies = $totalVacanciesRow['total_vacancies'] ?? 0;
+    }
 }
 
+// Order by deadline: 0-4 days remaining first, then other future, then past
+$query .= " ORDER BY 
+    CASE 
+        WHEN to_date >= CURDATE() AND DATEDIFF(to_date, CURDATE()) <= 4 THEN 1
+        WHEN to_date >= CURDATE() THEN 2
+        ELSE 3
+    END ASC, 
+    to_date ASC";
 
 $result = $conn->query($query);
 ?>
@@ -51,6 +67,9 @@ $result = $conn->query($query);
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        body {
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
         .btn-red {
             background-color: red;
             border-color: red;
@@ -159,6 +178,17 @@ $result = $conn->query($query);
 
         .nav-item {
             font-weight: bold;
+        }
+
+        /* Table Responsiveness */
+        .table-responsive-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #jobsTable {
+            width: 100% !important;
         }
 
         .join-us-box i {
@@ -275,7 +305,7 @@ $result = $conn->query($query);
 
         @media (max-width: 576px) {
             .side-popup {
-                width: 260px; /* Smaller width for mobile */
+                width: calc(100% - 30px); /* Responsive width */
                 top: 15px;
                 right: 15px;
                 border-radius: 10px;
@@ -290,6 +320,20 @@ $result = $conn->query($query);
             .side-popup-footer {
                 padding: 0 12px 12px;
             }
+
+            /* Subscribe Modal Mobile Fixes */
+            .modal-dialog {
+                margin: 15px !important;
+            }
+            .modal-header {
+                padding: 12px 15px;
+            }
+            .modal-title {
+                font-size: 18px !important;
+            }
+            .modal-body {
+                padding: 15px;
+            }
         }
         /* -------------------------- */
 
@@ -299,12 +343,6 @@ $result = $conn->query($query);
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        $(function () {
-            $("#from_date").datepicker();
-            $("#to_date").datepicker();
-            $('#jobsTable').DataTable();
-        });
-
         function deleteRecord(id) {
             if (confirm('Are you sure you want to delete this record?')) {
                 window.location.href = 'delete.php?id=' + id;
@@ -321,9 +359,10 @@ $result = $conn->query($query);
         </a>
 
         <!-- Blinking Subscribe button (Desktop only) -->
-        <a href="subscribe.php" class="btn btn-danger blink ml-2 d-none d-lg-inline-block" style="font-weight:bold;">
+        <!-- Desktop Subscribe button -->
+        <button type="button" class="btn btn-danger blink ml-2 d-none d-lg-inline-block" style="font-weight:bold;" data-toggle="modal" data-target="#subscribeModal">
             Subscribe
-        </a>
+        </button>
 
         <h3 class="navbar-center font-weight-bold">Jobs</h3>
 
@@ -334,7 +373,7 @@ $result = $conn->query($query);
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="home.php">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="index">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="about" role="button" data-toggle="dropdown"
@@ -352,10 +391,10 @@ $result = $conn->query($query);
                     <a class="nav-link" href="https://jobs.obcrights.org/Blogs/">Blogs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="privatejobportal.php">Private Job Portals</a>
+                    <a class="nav-link" href="privatejobportal">Private Job Portals</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="save_contact.php">Contact <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="save_contact">Contact <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link join-us-box" href="https://chat.whatsapp.com/Dj6ZIz2VicOHKHaDyvbSxi"
@@ -371,9 +410,9 @@ $result = $conn->query($query);
     <div class="container">
         <!-- Mobile Subscribe Button -->
         <div class="mobile-subscribe-container">
-            <a href="subscribe.php" class="btn btn-danger blink" style="font-weight:bold; padding: 10px 30px; border-radius: 8px;">
+            <button type="button" class="btn btn-danger blink" style="font-weight:bold; padding: 10px 30px; border-radius: 8px;" data-toggle="modal" data-target="#subscribeModal">
                  Subscribe
-            </a>
+            </button>
         </div>
         <!-- Display Total Vacancies -->
         <div class="row mt-4 justify-content-center">
@@ -383,20 +422,20 @@ $result = $conn->query($query);
             </div>
         </div>
         <div class="row mt-4">
-            <form class="form-horizontal w-100" action="jobs.php" method="POST">
+            <form class="form-horizontal w-100" action="index" method="POST">
                 <div class="form-row align-items-end">
                     <div class="form-group col-md-4">
                         <label for="type">Job Type</label>
                         <select name="type" id="type" class="form-control">
                             <option value="">Select</option>
-                            <option value="Central Govt Jobs">Central Govt Jobs</option>
-                            <option value="State Govt Jobs">State Govt Jobs</option>
-                            <option value="Bank Jobs">Bank Jobs</option>
+                            <option value="Central Govt Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'Central Govt Jobs') echo 'selected'; ?>>Central Govt Jobs</option>
+                            <option value="State Govt Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'State Govt Jobs') echo 'selected'; ?>>State Govt Jobs</option>
+                            <option value="Bank Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'Bank Jobs') echo 'selected'; ?>>Bank Jobs</option>
                         </select>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="age">Age</label>
-                        <input type="number" name="age" id="age" class="form-control">
+                        <input type="number" name="age" id="age" class="form-control" value="<?php echo isset($_POST['age']) ? htmlspecialchars($_POST['age']) : ''; ?>">
                     </div>
                     <div class="form-group col-md-4">
                         <button type="submit" name="submit" class="btn btn-red btn-block">Filter</button>
@@ -408,32 +447,33 @@ $result = $conn->query($query);
         <!-- Job Category Buttons -->
         <div class="row mt-3">
             <div class="col-md-4 text-center">
-                <a href="government_jobs.php" class="btn btn-yellow btn-block">Government Jobs</a>
+                <a href="government_jobs" class="btn btn-yellow btn-block">Government Jobs</a>
             </div>
             <div class="col-md-4 text-center">
-                <a href="bank_jobs.php" class="btn btn-yellow btn-block">Bank Jobs</a>
+                <a href="bank_jobs" class="btn btn-yellow btn-block">Bank Jobs</a>
             </div>
             <div class="col-md-4 text-center">
-                <a href="private_jobs.php" class="btn btn-yellow btn-block">Private Jobs</a>
+                <a href="privatejobportal" class="btn btn-yellow btn-block">Private Jobs</a>
             </div>
         </div>
 
         <div class="row mt-4">
-            <table id="jobsTable" class="table table-striped table-hover w-100">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Organization</th>
-                        <th>Vacancies</th>
-                        <th>Job Description</th>
-                        <th>Location</th>
-                        <th>Job Type</th>
-                        <th>Age Limits</th>
-                        <th>To</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="table-responsive-wrapper">
+                <table id="jobsTable" class="table table-striped table-hover w-100">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Organization</th>
+                            <th>Vacancies</th>
+                            <th>Job Description</th>
+                            <th>Location</th>
+                            <th>Job Type</th>
+                            <th>Age Limits</th>
+                            <th>To</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     <?php
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
@@ -447,7 +487,7 @@ $result = $conn->query($query);
                             echo "<td>" . htmlspecialchars($row['age_limits']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['to_date']) . "</td>";
                             echo "<td>";
-                            echo "<a href='job_details.php?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "' class='btn btn-red btn-sm'>View</a>";
+                            echo "<a href='job_details?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "' class='btn btn-red btn-sm'>View</a>";
                             echo "</td>";
                             echo "</tr>";
                         }
@@ -456,7 +496,8 @@ $result = $conn->query($query);
                     }
                     ?>
                 </tbody>
-            </table>
+                </table>
+            </div>
         </div>
     </div>
     <footer class="footer mt-auto py-3 bg-light">
@@ -485,6 +526,38 @@ $result = $conn->query($query);
         </div>
     </div>
 
+    <!-- Subscribe Modal -->
+    <div class="modal fade" id="subscribeModal" tabindex="-1" role="dialog" aria-labelledby="subscribeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="subscribeModalLabel">Subscribe for Job Updates</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="subscribeMessage" style="display:none;" class="alert"></div>
+                    <form id="subscribeForm">
+                        <p class="text-muted">Get latest job notifications directly in your inbox!</p>
+                        <div class="form-group">
+                            <label for="modalEmail"><strong>Your Email Address</strong></label>
+                            <input type="email" class="form-control" id="modalEmail" name="email" placeholder="example@email.com" required>
+                            <small class="form-text text-muted">We will send you job updates only. No spam!</small>
+                        </div>
+                        <button type="submit" class="btn btn-danger btn-block font-weight-bold">Subscribe Now</button>
+                    </form>
+                    <div id="subscribeSuccess" style="display:none;" class="text-center py-3">
+                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                        <h4 class="text-success">Thank you for your subscription!</h4>
+                        <p>You will now receive job updates.</p>
+                        <button type="button" class="btn btn-secondary mt-2" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Auto-show side popup script with 5-second delay -->
     <script>
     $(document).ready(function() {
@@ -495,7 +568,58 @@ $result = $conn->query($query);
                 sessionStorage.setItem('sidePopupShown', 'true');
             }, 5000);
         }
-        $('#jobsTable').DataTable();
+
+        $("#from_date").datepicker();
+        $("#to_date").datepicker();
+
+        if ($.fn.DataTable.isDataTable('#jobsTable')) {
+            $('#jobsTable').DataTable().destroy();
+        }
+        
+        $('#jobsTable').DataTable({
+            "order": [],
+            "retrieve": true
+        });
+
+        // AJAX Subscription
+        $('#subscribeForm').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const messageDiv = $('#subscribeMessage');
+            const successDiv = $('#subscribeSuccess');
+            const submitBtn = form.find('button[type="submit"]');
+
+            submitBtn.prop('disabled', true).text('Submitting...');
+
+            $.ajax({
+                url: 'subscribe_process.php',
+                type: 'POST',
+                data: form.serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        form.hide();
+                        messageDiv.hide();
+                        successDiv.fadeIn();
+                    } else {
+                        messageDiv.removeClass('alert-success').addClass('alert-danger').text(response.message).fadeIn();
+                        submitBtn.prop('disabled', false).text('Subscribe Now');
+                    }
+                },
+                error: function() {
+                    messageDiv.removeClass('alert-success').addClass('alert-danger').text('An error occurred. Please try again later.').fadeIn();
+                    submitBtn.prop('disabled', false).text('Subscribe Now');
+                }
+            });
+        });
+
+        // Reset form when modal is closed
+        $('#subscribeModal').on('hidden.bs.modal', function () {
+            $('#subscribeForm').show().trigger('reset');
+            $('#subscribeMessage').hide();
+            $('#subscribeSuccess').hide();
+            $('#subscribeForm button[type="submit"]').prop('disabled', false).text('Subscribe Now');
+        });
     });
 
     function closeSidePopup() {

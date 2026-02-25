@@ -28,7 +28,24 @@ if (isset($_POST['submit'])) {
 
 if (count($conditions) > 0) {
     $query .= " WHERE " . implode(' AND ', $conditions);
+
+    // Update total vacancies based on filter
+    $filteredTotalQuery = "SELECT SUM(vacancies) AS total_vacancies FROM records WHERE " . implode(' AND ', $conditions);
+    $filteredTotalResult = $conn->query($filteredTotalQuery);
+    if ($filteredTotalResult) {
+        $filteredTotalRow = $filteredTotalResult->fetch_assoc();
+        $totalVacancies = $filteredTotalRow['total_vacancies'] ?? 0;
+    }
 }
+
+// Order by deadline: 0-4 days remaining first, then other future, then past
+$query .= " ORDER BY 
+    CASE 
+        WHEN to_date >= CURDATE() AND DATEDIFF(to_date, CURDATE()) <= 4 THEN 1
+        WHEN to_date >= CURDATE() THEN 2
+        ELSE 3
+    END ASC, 
+    to_date ASC";
 
 $result = $conn->query($query);
 ?>
@@ -172,10 +189,18 @@ $result = $conn->query($query);
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-    $(function() {
+    $(document).ready(function() {
         $("#from_date").datepicker();
         $("#to_date").datepicker();
-        $('#jobsTable').DataTable();
+        
+        if ($.fn.DataTable.isDataTable('#jobsTable')) {
+            $('#jobsTable').DataTable().destroy();
+        }
+
+        $('#jobsTable').DataTable({
+            "order": [],
+            "retrieve": true
+        });
     });
 
     function deleteRecord(id) {
@@ -200,7 +225,7 @@ $result = $conn->query($query);
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                    <a class="nav-link" href="home.php">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="index">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="about" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -217,10 +242,10 @@ $result = $conn->query($query);
                     <a class="nav-link" href="https://jobs.obcrights.org/Blogs/">Blogs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="privatejobportal.php">Private Job Portals</a>
+                    <a class="nav-link" href="privatejobportal">Private Job Portals</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="save_contact.php">Contact <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="save_contact">Contact <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link join-us-box" href="https://chat.whatsapp.com/Dj6ZIz2VicOHKHaDyvbSxi" target="_blank">
@@ -240,20 +265,20 @@ $result = $conn->query($query);
             </div>
         </div>
         <div class="row mt-4">
-            <form class="form-horizontal w-100" action="jobs.php" method="POST">
+            <form class="form-horizontal w-100" action="home" method="POST">
                 <div class="form-row align-items-end">
                     <div class="form-group col-md-4">
                         <label for="type">Job Type</label>
                         <select name="type" id="type" class="form-control">
                             <option value="">Select</option>
-                            <option value="Central Govt Jobs">Central Govt Jobs</option>
-                            <option value="State Govt Jobs">State Govt Jobs</option>
-                            <option value="Bank Jobs">Bank Jobs</option>
+                            <option value="Central Govt Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'Central Govt Jobs') echo 'selected'; ?>>Central Govt Jobs</option>
+                            <option value="State Govt Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'State Govt Jobs') echo 'selected'; ?>>State Govt Jobs</option>
+                            <option value="Bank Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'Bank Jobs') echo 'selected'; ?>>Bank Jobs</option>
                         </select>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="age">Age</label>
-                        <input type="number" name="age" id="age" class="form-control">
+                        <input type="number" name="age" id="age" class="form-control" value="<?php echo isset($_POST['age']) ? htmlspecialchars($_POST['age']) : ''; ?>">
                     </div>
                     <div class="form-group col-md-4">
                         <button type="submit" name="submit" class="btn btn-red btn-block">Filter</button>
@@ -265,13 +290,13 @@ $result = $conn->query($query);
         <!-- Job Category Buttons -->
 <div class="row mt-3">
     <div class="col-md-4 text-center">
-        <a href="government_jobs.php" class="btn btn-yellow btn-block">Government Jobs</a>
+        <a href="government_jobs" class="btn btn-yellow btn-block">Government Jobs</a>
     </div>
     <div class="col-md-4 text-center">
-        <a href="bank_jobs.php" class="btn btn-yellow btn-block">Bank Jobs</a>
+        <a href="bank_jobs" class="btn btn-yellow btn-block">Bank Jobs</a>
     </div>
     <div class="col-md-4 text-center">
-        <a href="private_jobs.php" class="btn btn-yellow btn-block">Private Jobs</a>
+        <a href="privatejobportal" class="btn btn-yellow btn-block">Private Jobs</a>
     </div>
 </div>
 
@@ -304,7 +329,7 @@ $result = $conn->query($query);
                         echo "<td>" . htmlspecialchars($row['age_limits']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['to_date']) . "</td>";
                         echo "<td>";
-                        echo "<a href='job_details.php?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "' class='btn btn-red btn-sm'>View</a>";
+                        echo "<a href='job_details?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "' class='btn btn-red btn-sm'>View</a>";
                         echo "</td>";
                         echo "</tr>";
                     }
@@ -318,7 +343,7 @@ $result = $conn->query($query);
     </div>
     <footer class="footer mt-auto py-3 bg-light">
     <div class="container text-center">
-        <span class="text-muted">Copyright © 2024 [obcrights]</span><br>
+        <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
         <span class="text-muted">Powered by jobs.obcrights</span>
     </div>
 </footer>

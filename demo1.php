@@ -22,7 +22,7 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
     $(function() {
         $("#from_date").datepicker();
         $("#to_date").datepicker();
-        $('#jobsTable').DataTable();
+        $('#jobsTable').DataTable({"order": []});
     });
 
     function deleteRecord(id) {
@@ -122,7 +122,7 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
                         echo "<td>" . htmlspecialchars($row['age_limits']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['to_date']) . "</td>";
                         echo "<td>";
-                        echo "<a href='job_details.php?id=" . htmlspecialchars($row['id']) . "' class='btn btn-primary btn-sm'>View</a> ";
+                        echo "<a href='job_details?id=" . htmlspecialchars($row['id']) . "' class='btn btn-primary btn-sm'>View</a> ";
                         if ($logged_in_as_admin) {
                             echo "<a href='edit_jobs.php?id=" . htmlspecialchars($row['id']) . "' class='btn btn-warning btn-sm'>Edit</a> ";
                             echo "<button onclick='deleteRecord(" . htmlspecialchars($row['id']) . ")' class='btn btn-danger btn-sm'>Delete</button>";

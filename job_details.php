@@ -157,7 +157,7 @@ function formatText($text) {
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                    <a class="nav-link" href="home.php">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="index">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="about" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -171,13 +171,13 @@ function formatText($text) {
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="blogs.php">Blogs</a>
+                    <a class="nav-link" href="https://jobs.obcrights.org/Blogs/">Blogs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="privatejobportal.php">Private Job Portals</a>
+                    <a class="nav-link" href="privatejobportal">Private Job Portals</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="save_contact.php">Contact <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="save_contact">Contact <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link join-us-box" href="https://chat.whatsapp.com/Dj6ZIz2VicOHKHaDyvbSxi" target="_blank">
@@ -288,13 +288,13 @@ function formatText($text) {
                     </td>
                 </tr>
             </table>
-            <a href="index.php" class="btn btn-secondary">Back</a>
+            <a href="index" class="btn btn-secondary">Back</a>
         </div>
     </div>
 </div>
 <footer class="footer mt-auto py-3 bg-light">
     <div class="container text-center">
-        <span class="text-muted">Copyright © 2024 [obcrights]</span><br>
+        <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
         <span class="text-muted">Powered by jobs.obcrights</span>
     </div>
 </footer>

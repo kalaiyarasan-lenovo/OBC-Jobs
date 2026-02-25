@@ -3,7 +3,13 @@ session_start();
 include("config/config_db.php");
 
 // Fetch central government jobs from the database
-$query = "SELECT * FROM records WHERE type = 'State Govt Jobs'";
+$query = "SELECT * FROM records WHERE type = 'State Govt Jobs' ORDER BY 
+    CASE 
+        WHEN to_date >= CURDATE() AND DATEDIFF(to_date, CURDATE()) <= 4 THEN 1
+        WHEN to_date >= CURDATE() THEN 2
+        ELSE 3
+    END ASC, 
+    to_date ASC";
 $result = $conn->query($query);
 
 // Calculate total vacancies for Central Govt Jobs
@@ -76,7 +82,7 @@ $totalVacancies = $totalVacanciesRow['total_vacancies'];
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
     $(function() {
-        $('#jobsTable').DataTable();
+        $('#jobsTable').DataTable({"order": []});
     });
 
     function deleteRecord(id) {
@@ -101,7 +107,7 @@ $totalVacancies = $totalVacanciesRow['total_vacancies'];
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                    <a class="nav-link" href="home.php">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="index">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="about" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -115,13 +121,13 @@ $totalVacancies = $totalVacanciesRow['total_vacancies'];
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="blogs.php">Blogs</a>
+                    <a class="nav-link" href="https://jobs.obcrights.org/Blogs/">Blogs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="privatejobportal.php">Private Job Portals</a>
+                    <a class="nav-link" href="privatejobportal">Private Job Portals</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="save_contact.php">Contact <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="save_contact">Contact <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link join-us-box" href="https://chat.whatsapp.com/Dj6ZIz2VicOHKHaDyvbSxi" target="_blank">
@@ -170,7 +176,7 @@ $totalVacancies = $totalVacanciesRow['total_vacancies'];
                         echo "<td>" . htmlspecialchars($row['age_limits']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['to_date']) . "</td>";
                         echo "<td>";
-                        echo "<a href='job_details.php?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "' class='btn btn-red btn-sm'>View</a>";
+                        echo "<a href='job_details?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "' class='btn btn-red btn-sm'>View</a>";
                         echo "</td>";
                         echo "</tr>";
                     }
@@ -185,7 +191,7 @@ $totalVacancies = $totalVacanciesRow['total_vacancies'];
 
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container text-center">
-            <span class="text-muted">Copyright © 2024 [obcrights]</span><br>
+            <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
             <span class="text-muted">Powered by jobs.obcrights</span>
         </div>
     </footer>

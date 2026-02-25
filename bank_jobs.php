@@ -6,10 +6,38 @@ include("config/config_db.php");
 $totalVacanciesQuery = "SELECT SUM(vacancies) AS total_vacancies FROM records WHERE type = 'Bank Jobs'";
 $totalVacanciesResult = $conn->query($totalVacanciesQuery);
 $totalVacanciesRow = $totalVacanciesResult->fetch_assoc();
-$totalVacancies = $totalVacanciesRow['total_vacancies'];
+$totalVacancies = $totalVacanciesRow['total_vacancies'] ?? 0;
 
 // Fetch bank jobs from the database
 $query = "SELECT * FROM records WHERE type = 'Bank Jobs'";
+$conditions = array();
+
+if (isset($_POST['submit'])) {
+    if (!empty($_POST['age'])) {
+        $age = intval($_POST['age']);
+        $conditions[] = "$age BETWEEN start_age AND end_age";
+    }
+}
+
+if (count($conditions) > 0) {
+    $query .= " AND " . implode(' AND ', $conditions);
+    
+    // Update total vacancies based on filter
+    $filteredTotalQuery = "SELECT SUM(vacancies) AS total_vacancies FROM records WHERE type = 'Bank Jobs' AND " . implode(' AND ', $conditions);
+    $filteredTotalResult = $conn->query($filteredTotalQuery);
+    if ($filteredTotalResult) {
+        $filteredTotalRow = $filteredTotalResult->fetch_assoc();
+        $totalVacancies = $filteredTotalRow['total_vacancies'] ?? 0;
+    }
+}
+
+$query .= " ORDER BY 
+    CASE 
+        WHEN to_date >= CURDATE() AND DATEDIFF(to_date, CURDATE()) <= 4 THEN 1
+        WHEN to_date >= CURDATE() THEN 2
+        ELSE 3
+    END ASC, 
+    to_date ASC";
 $result = $conn->query($query);
 ?>
 
@@ -76,8 +104,14 @@ $result = $conn->query($query);
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-    $(function() {
-        $('#jobsTable').DataTable();
+    $(document).ready(function() {
+        if ($.fn.DataTable.isDataTable('#jobsTable')) {
+            $('#jobsTable').DataTable().destroy();
+        }
+        $('#jobsTable').DataTable({
+            "order": [],
+            "retrieve": true
+        });
     });
 
     function deleteRecord(id) {
@@ -102,7 +136,7 @@ $result = $conn->query($query);
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                    <a class="nav-link" href="home.php">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="index">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="about" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -116,13 +150,13 @@ $result = $conn->query($query);
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="blogs.php">Blogs</a>
+                    <a class="nav-link" href="https://jobs.obcrights.org/Blogs/">Blogs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="privatejobportal.php">Private Job Portals</a>
+                    <a class="nav-link" href="privatejobportal">Private Job Portals</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="save_contact.php">Contact <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="save_contact">Contact <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link join-us-box" href="https://chat.whatsapp.com/Dj6ZIz2VicOHKHaDyvbSxi" target="_blank">
@@ -135,9 +169,29 @@ $result = $conn->query($query);
     </nav>
 
     <div class="container">
+        <!-- Filter Form -->
+        <div class="row mt-4">
+            <form class="form-horizontal w-100" action="bank_jobs" method="POST">
+                <div class="form-row align-items-end justify-content-center">
+                    <div class="form-group col-md-4">
+                        <label for="age">Filter by Age</label>
+                        <input type="number" name="age" id="age" class="form-control" placeholder="Enter your age" value="<?php echo isset($_POST['age']) ? htmlspecialchars($_POST['age']) : ''; ?>">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <button type="submit" name="submit" class="btn btn-red btn-block">Filter</button>
+                    </div>
+                    <?php if (isset($_POST['submit'])): ?>
+                    <div class="form-group col-md-2">
+                        <a href="bank_jobs" class="btn btn-secondary btn-block">Reset</a>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </form>
+        </div>
+
         <!-- Display Total Vacancies -->
         <div class="row mt-4 justify-content-center">
-            <div class="col-md-4 text-center">
+            <div class="col-md-5 text-center">
                 <h5 class="btn btn-light-gray btn-block"><b>Total Bank Job Vacancies: <span><?php echo htmlspecialchars($totalVacancies); ?></span></b></h5>
             </div>
         </div>
@@ -172,7 +226,7 @@ $result = $conn->query($query);
                         echo "<td>" . htmlspecialchars($row['age_limits']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['to_date']) . "</td>";
                         echo "<td>";
-                        echo "<a href='job_details.php?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "' class='btn btn-red btn-sm'>View</a>";
+                        echo "<a href='job_details?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "' class='btn btn-red btn-sm'>View</a>";
                         echo "</td>";
                         echo "</tr>";
                     }
@@ -186,7 +240,7 @@ $result = $conn->query($query);
     </div>
     <footer class="footer mt-auto py-3 bg-light">
     <div class="container text-center">
-        <span class="text-muted">Copyright © 2024 [obcrights]</span><br>
+        <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
         <span class="text-muted">Powered by jobs.obcrights</span>
     </div>
     </footer>
