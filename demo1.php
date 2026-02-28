@@ -14,6 +14,11 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+    <style>
+        .clickable-row {
+            cursor: pointer;
+        }
+    </style>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
@@ -23,6 +28,11 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
         $("#from_date").datepicker();
         $("#to_date").datepicker();
         $('#jobsTable').DataTable({"order": []});
+
+        // Clickable row functionality
+        $(document).on('click', '.clickable-row', function() {
+            window.location = $(this).data("href");
+        });
     });
 
     function deleteRecord(id) {
@@ -112,7 +122,7 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
                 $result = $conn->query($query);
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
+                        echo "<tr class='clickable-row' data-href='job_details?id=" . htmlspecialchars($row['id']) . "'>";
                         echo "<td>" . htmlspecialchars($row['id']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['name']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['vacancies']) . "</td>";
