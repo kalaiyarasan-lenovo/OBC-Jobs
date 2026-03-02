@@ -35,6 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Portal</title>
+    <link rel="icon" type="image/png" href="obc_logo-1.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -263,7 +264,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </section>
 <footer class="footer mt-auto py-3 bg-light">
     <div class="container text-center">
-        <span class="text-muted">Copyright © 2024 [obcrights]</span><br>
+        <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
         <span class="text-muted">Powered by jobs.obcrights</span>
     </div>
 </footer>

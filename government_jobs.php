@@ -50,7 +50,7 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Government Jobs</title>
-    <link rel="icon" type="images/obc-logo.jpg" href="images/obc-logo.jpg">
+    <link rel="icon" type="image/png" href="obc_logo-1.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
@@ -116,6 +116,10 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
         .join-us-box i:hover {
             color: white;
         }
+
+        .clickable-row {
+            cursor: pointer;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
@@ -129,6 +133,11 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
             $('#jobsTable').DataTable({
                 "order": [],
                 "retrieve": true
+            });
+
+            // Clickable row functionality
+            $(document).on('click', '.clickable-row', function() {
+                window.location = $(this).data("href");
             });
         });
 
@@ -240,7 +249,7 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
                 </thead>
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()) { ?>
-                        <tr>
+                        <tr class="clickable-row" data-href="job_details?id=<?= htmlspecialchars($row['id']) ?>">
                             <td><?= htmlspecialchars($row['id']) ?></td>
                             <td><?= htmlspecialchars($row['name']) ?></td>
                             <td><?= htmlspecialchars($row['vacancies']) ?></td>

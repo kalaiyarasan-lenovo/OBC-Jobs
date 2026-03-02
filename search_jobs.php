@@ -11,6 +11,7 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Jobs</title>
+    <link rel="icon" type="image/png" href="obc_logo-1.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
@@ -108,6 +109,9 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
             margin-left: 5px;
             color: #25D366; /* WhatsApp green color */
         }
+        .clickable-row {
+            cursor: pointer;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
@@ -118,6 +122,11 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
         $("#from_date").datepicker();
         $("#to_date").datepicker();
         $('#jobsTable').DataTable({"order": []});
+
+        // Clickable row functionality
+        $(document).on('click', '.clickable-row', function() {
+            window.location = $(this).data("href");
+        });
     });
 
     function deleteRecord(id) {
@@ -223,7 +232,7 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
                         <th>Job Description</th>
                         <th>Job Type</th>
                         <th>Age Limits</th>
-                        <th>To</th>
+                        <th>Last Date</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -233,7 +242,7 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
                 $result = $conn->query($query);
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
+                        echo "<tr class='clickable-row' data-href='job_details?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "'>";
                         echo "<td>" . htmlspecialchars($row['id']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['name']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['vacancies']) . "</td>";
@@ -258,7 +267,7 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
     <!-- Footer -->
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container text-center">
-            <span class="text-muted">© 2024 Jobs Portal. All rights reserved.</span>
+            <span class="text-muted">© 2026 Jobs Portal. All rights reserved.</span>
         </div>
     </footer>
 </body>

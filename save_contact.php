@@ -10,19 +10,29 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $number = $_POST['number'];
+    $name = $conn->real_escape_string($_POST['name']);
+    $email = $conn->real_escape_string($_POST['email']);
+    $number = $conn->real_escape_string($_POST['number']);
 
-    $sql = "INSERT INTO contacts (name, email, number) VALUES ('$name', '$email', '$number')";
+    // Check if email already exists
+    $checkEmail = "SELECT * FROM contacts WHERE email = '$email'";
+    $result = $conn->query($checkEmail);
 
-    if ($conn->query($sql) === TRUE) {
-        echo "New record created successfully";
+    if ($result->num_rows > 0) {
+        $_SESSION['msg'] = "This email is already registered!";
+        $_SESSION['msg_type'] = "warning";
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        $sql = "INSERT INTO contacts (name, email, number) VALUES ('$name', '$email', '$number')";
+        if ($conn->query($sql) === TRUE) {
+            $_SESSION['msg'] = "Thank you! Your information has been saved successfully.";
+            $_SESSION['msg_type'] = "success";
+        } else {
+            $_SESSION['msg'] = "Error: " . $conn->error;
+            $_SESSION['msg_type'] = "danger";
+        }
     }
-
-    $conn->close();
+    header("Location: save_contact");
+    exit();
 }
 ?>
 <!DOCTYPE html>
@@ -31,6 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Portal</title>
+    <link rel="icon" type="image/png" href="obc_logo-1.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -225,15 +236,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
     </div>
 </section>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <footer class="footer mt-auto py-3 bg-light">
     <div class="container text-center">
         <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
         <span class="text-muted">Powered by jobs.obcrights</span>
     </div>
 </footer>
+
+<!-- Notification Modal -->
+<div class="modal fade" id="msgModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header <?php echo (isset($_SESSION['msg_type']) && $_SESSION['msg_type'] == 'success') ? 'bg-success' : 'bg-warning'; ?> text-white">
+                <h5 class="modal-title" id="msgModalLabel">Notification</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p id="modalMsg"><?php echo $_SESSION['msg'] ?? ''; ?></p>
+                <button type="button" class="btn <?php echo (isset($_SESSION['msg_type']) && $_SESSION['msg_type'] == 'success') ? 'btn-success' : 'btn-warning'; ?>" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<?php if (isset($_SESSION['msg'])): ?>
+<script>
+    $(document).ready(function(){
+        $('#msgModal').modal('show');
+    });
+</script>
+<?php 
+    unset($_SESSION['msg']);
+    unset($_SESSION['msg_type']);
+endif; 
+?>
+
 </body>
 </html>

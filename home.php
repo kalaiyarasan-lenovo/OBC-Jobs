@@ -56,6 +56,7 @@ $result = $conn->query($query);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Jobs</title>
+    <link rel="icon" type="image/png" href="obc_logo-1.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
@@ -183,6 +184,10 @@ $result = $conn->query($query);
     display: block;
 }
 
+.clickable-row {
+    cursor: pointer;
+}
+
     </style>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
@@ -200,6 +205,11 @@ $result = $conn->query($query);
         $('#jobsTable').DataTable({
             "order": [],
             "retrieve": true
+        });
+
+        // Clickable row functionality
+        $(document).on('click', '.clickable-row', function() {
+            window.location = $(this).data("href");
         });
     });
 
@@ -311,7 +321,7 @@ $result = $conn->query($query);
                         <th>Location</th>
                         <th>Job Type</th>
                         <th>Age Limits</th>
-                        <th>To</th>
+                        <th>Last Date</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -319,7 +329,7 @@ $result = $conn->query($query);
                 <?php
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
+                        echo "<tr class='clickable-row' data-href='job_details?id=" . htmlspecialchars($row['id']) . "&org=" . htmlspecialchars($row['name']) . "'>";
                         echo "<td>" . htmlspecialchars($row['id']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['name']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['vacancies']) . "</td>";

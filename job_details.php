@@ -15,7 +15,14 @@ if ($row = $result->fetch_assoc()) {
 }
 
 function formatText($text) {
-    return nl2br(htmlspecialchars($text, ENT_QUOTES, 'UTF-8'));
+    // HTML entities-ai decode seigirom
+    $text = htmlspecialchars_decode($text, ENT_QUOTES);
+    // Literal \r and \n characters-ai actual newlines-aga maatrirom
+    $text = str_replace(['\r', '\n'], ["\r", "\n"], $text);
+    // Erkanave ulla <br /> tags-ai standard newline-aga maatri, pinbu nl2br apply seigirom.
+    // Ithu double spacing-ai thadukkum.
+    $text = preg_replace('/<br\s*\/?>/i', "\n", $text);
+    return nl2br($text);
 }
 ?>
 
@@ -25,7 +32,7 @@ function formatText($text) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Job Details</title>
-    <link rel="icon" type="images/obc-logo.jpg" href="images/obc-logo.jpg">
+    <link rel="icon" type="image/png" href="obc_logo-1.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
@@ -136,9 +143,15 @@ function formatText($text) {
     background-color: #f1f1f1;
 }
 
-.nav-item.dropdown:hover .dropdown-menu {
+        .nav-item.dropdown:hover .dropdown-menu {
     display: block;
 }
+
+        table ul {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0;
+        }
 
     </style>
 </head>
@@ -216,10 +229,18 @@ function formatText($text) {
                     <td>
                         <ul>
                             <?php 
-                            $qualifications = formatText($row['education_qualification']);
-                            $qualificationsArray = preg_split('/\d+\.\s+/', $qualifications, -1, PREG_SPLIT_NO_EMPTY);
-                            foreach ($qualificationsArray as $key => $qualification) {
-                                echo '<li>' . formatText(($key + 1) . '. ' . $qualification) . '</li>';
+                            $qualifications = $row['education_qualification'];
+                            $qualifications = str_replace(['\r', '\n'], ["\r", "\n"], $qualifications);
+                            $qualificationsArray = preg_split('/\d+\.\s+|\n|\r/', $qualifications, -1, PREG_SPLIT_NO_EMPTY);
+                            $items = array_filter(array_map('trim', $qualificationsArray));
+                            $count = count($items);
+                            $counter = 1;
+                            foreach ($items as $item) {
+                                echo '<li>';
+                                if ($count > 1) {
+                                    echo '<b>' . htmlspecialchars($counter++) . '. </b>';
+                                }
+                                echo formatText($item) . '</li>';
                             }
                             ?>
                         </ul>
@@ -230,10 +251,18 @@ function formatText($text) {
                     <td>
                         <ul>
                             <?php 
-                            $processes = formatText($row['selection_process']);
-                            $processesArray = preg_split('/\d+\.\s+/', $processes, -1, PREG_SPLIT_NO_EMPTY);
-                            foreach ($processesArray as $key => $process) {
-                                echo '<li>' . formatText(($key + 1) . '. ' . $process) . '</li>';
+                            $processes = $row['selection_process'];
+                            $processes = str_replace(['\r', '\n'], ["\r", "\n"], $processes);
+                            $processesArray = preg_split('/\d+\.\s+|\n|\r/', $processes, -1, PREG_SPLIT_NO_EMPTY);
+                            $items = array_filter(array_map('trim', $processesArray));
+                            $count = count($items);
+                            $counter = 1;
+                            foreach ($items as $item) {
+                                echo '<li>';
+                                if ($count > 1) {
+                                    echo '<b>' . htmlspecialchars($counter++) . '. </b>';
+                                }
+                                echo formatText($item) . '</li>';
                             }
                             ?>
                         </ul>
@@ -244,10 +273,18 @@ function formatText($text) {
                     <td>
                         <ul>
                             <?php 
-                            $apps = formatText($row['app_fee']);
-                            $appArray = preg_split('/\d+\.\s+/', $apps, -1, PREG_SPLIT_NO_EMPTY);
-                            foreach ($appArray as $key => $app) {
-                                echo '<li>' . formatText(($key + 1) . '. ' . $app) . '</li>';
+                            $apps = $row['app_fee'];
+                            $apps = str_replace(['\r', '\n'], ["\r", "\n"], $apps);
+                            $appArray = preg_split('/\d+\.\s+|\n|\r/', $apps, -1, PREG_SPLIT_NO_EMPTY);
+                            $items = array_filter(array_map('trim', $appArray));
+                            $count = count($items);
+                            $counter = 1;
+                            foreach ($items as $item) {
+                                echo '<li>';
+                                if ($count > 1) {
+                                    echo '<b>' . htmlspecialchars($counter++) . '. </b>';
+                                }
+                                echo formatText($item) . '</li>';
                             }
                             ?>
                         </ul>
@@ -278,10 +315,18 @@ function formatText($text) {
                     <td>
                         <ul>
                             <?php 
-                            $applys = formatText($row['how_to_apply']);
-                            $applyArray = preg_split('/\d+\.\s+/', $applys, -1, PREG_SPLIT_NO_EMPTY);
-                            foreach ($applyArray as $key => $apply) {
-                                echo '<li>' . formatText(($key + 1) . '. ' . $apply) . '</li>';
+                            $applys = $row['how_to_apply'];
+                            $applys = str_replace(['\r', '\n'], ["\r", "\n"], $applys);
+                            $applyArray = preg_split('/\d+\.\s+|\n|\r/', $applys, -1, PREG_SPLIT_NO_EMPTY);
+                            $items = array_filter(array_map('trim', $applyArray));
+                            $count = count($items);
+                            $counter = 1;
+                            foreach ($items as $item) {
+                                echo '<li>';
+                                if ($count > 1) {
+                                    echo '<b>' . htmlspecialchars($counter++) . '. </b>';
+                                }
+                                echo formatText($item) . '</li>';
                             }
                             ?>
                         </ul>
