@@ -215,25 +215,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 
 <section class="my-4">
-    <div class="py-4">
-        <div class="text-center">Get in Touch</div>
-    </div>
-    <div class="w-50 m-auto">
-        <form action="save_contact" method="post">
-            <div class="form-group">
-                <label>Name:</label>
-                <input type="text" name="name" class="form-control" required>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-8 col-11 mx-auto">
+                <div class="py-4">
+                    <h3 class="text-center font-weight-bold">Get in Touch</h3>
+                </div>
+                <form action="save_contact" method="post" class="border p-4 bg-light rounded shadow-sm">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Name:</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bold">Email:</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bold">Number:</label>
+                        <input type="text" name="number" class="form-control" required>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-success px-5">Submit</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label>Email:</label>
-                <input type="email" name="email" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label>Number:</label>
-                <input type="text" name="number" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-success">Submit</button>
-        </form>
+        </div>
     </div>
 </section>
 <footer class="footer mt-auto py-3 bg-light">

@@ -41,8 +41,8 @@ if (count($conditions) > 0) {
 // Order by deadline: 0-4 days remaining first, then other future, then past
 $query .= " ORDER BY 
     CASE 
-        WHEN to_date >= CURDATE() AND DATEDIFF(to_date, CURDATE()) <= 4 THEN 1
-        WHEN to_date >= CURDATE() THEN 2
+        WHEN to_date >= '$current_date' AND DATEDIFF(to_date, '$current_date') <= 4 THEN 1
+        WHEN to_date >= '$current_date' THEN 2
         ELSE 3
     END ASC, 
     to_date ASC";
@@ -224,7 +224,7 @@ $result = $conn->query($query);
     <div class="container">
         <h3 class="text-center font-weight-bold my-4">Search Jobs</h3>
         <div class="row mt-4">
-            <form class="form-horizontal w-100" action="jobs.php" method="POST">
+            <form class="form-horizontal w-100" action="jobs" method="POST">
                 <div class="form-row align-items-end">
                     <div class="form-group col-md-4">
                         <label for="type">Job Type</label>

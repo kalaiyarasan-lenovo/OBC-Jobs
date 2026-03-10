@@ -11,7 +11,9 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Jobs</title>
+    <link rel="icon" type="image/png" href="obc_logo-1.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
     <style>
@@ -30,15 +32,56 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
         $('#jobsTable').DataTable({"order": []});
 
         // Clickable row functionality
-        $(document).on('click', '.clickable-row', function() {
+        $(document).on('click', '.clickable-row', function(e) {
+            // If the user clicks on a button or link within the row, don't trigger the row click
+            if ($(e.target).closest('a, button').length) {
+                return;
+            }
             window.location = $(this).data("href");
         });
     });
 
     function deleteRecord(id) {
-        if (confirm('Are you sure you want to delete this record?')) {
-            window.location.href = 'delete.php?id=' + id;
-        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: 'delete?id=' + id,
+                    type: 'GET',
+                    success: function(response) {
+                        if(response.status === 'success') {
+                            Swal.fire(
+                                'Deleted!',
+                                response.message,
+                                'success'
+                            ).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'Error: ' + response.message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Error!',
+                            'An error occurred while deleting the record.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
     }
     </script>
 </head>
@@ -53,7 +96,7 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
     <div class="container">
         <h3 class="text-center font-weight-bold my-4">Search Jobs</h3>
         <div class="row mt-4">
-            <form class="form-horizontal w-100" action="demo1.php" method="POST">
+            <form class="form-horizontal w-100" action="demo1" method="POST">
                 <div class="form-row align-items-end">
                     <div class="form-group col-md-4">
                         <label for="type">Job Type</label>
@@ -79,7 +122,7 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
         <div class="row mt-4">
             <div class="col-md-12">
                 <?php if ($logged_in_as_admin) { ?>
-                    <a href="add_jobs.php" class="btn btn-success btn-block">Add Job</a>
+                    <a href="add_jobs" class="btn btn-success btn-block">Add Job</a>
                 <?php } else { ?>
                     <button class="btn btn-success btn-block" disabled>Add Job</button>
                 <?php } ?>
@@ -134,7 +177,7 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
                         echo "<td>";
                         echo "<a href='job_details?id=" . htmlspecialchars($row['id']) . "' class='btn btn-primary btn-sm'>View</a> ";
                         if ($logged_in_as_admin) {
-                            echo "<a href='edit_jobs.php?id=" . htmlspecialchars($row['id']) . "' class='btn btn-warning btn-sm'>Edit</a> ";
+                            echo "<a href='edit_jobs?id=" . htmlspecialchars($row['id']) . "' class='btn btn-warning btn-sm'>Edit</a> ";
                             echo "<button onclick='deleteRecord(" . htmlspecialchars($row['id']) . ")' class='btn btn-danger btn-sm'>Delete</button>";
                         }
                         echo "</td>";
@@ -148,5 +191,11 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
             </table>
         </div>
     </div>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
+            <span class="text-muted">Powered by jobs.obcrights</span>
+        </div>
+    </footer>
 </body>
 </html>

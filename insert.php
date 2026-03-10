@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 include("config/config_db.php");
 
 if (!isset($_SESSION['login_user'])) {
-    header("location: login.php");
+    header("location: login");
     exit();
 }
 

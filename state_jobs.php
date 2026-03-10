@@ -5,8 +5,8 @@ include("config/config_db.php");
 // Fetch central government jobs from the database
 $query = "SELECT * FROM records WHERE type = 'State Govt Jobs' ORDER BY 
     CASE 
-        WHEN to_date >= CURDATE() AND DATEDIFF(to_date, CURDATE()) <= 4 THEN 1
-        WHEN to_date >= CURDATE() THEN 2
+        WHEN to_date >= '$current_date' AND DATEDIFF(to_date, '$current_date') <= 4 THEN 1
+        WHEN to_date >= '$current_date' THEN 2
         ELSE 3
     END ASC, 
     to_date ASC";
@@ -27,6 +27,7 @@ $totalVacancies = $totalVacanciesRow['total_vacancies'];
     <title>State Government Jobs</title>
     <link rel="icon" type="image/png" href="obc_logo-1.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -89,15 +90,55 @@ $totalVacancies = $totalVacanciesRow['total_vacancies'];
         $('#jobsTable').DataTable({"order": []});
 
         // Clickable row functionality
-        $(document).on('click', '.clickable-row', function() {
+        $(document).on('click', '.clickable-row', function(e) {
+            if ($(e.target).closest('a, button').length) {
+                return;
+            }
             window.location = $(this).data("href");
         });
     });
 
     function deleteRecord(id) {
-        if (confirm('Are you sure you want to delete this record?')) {
-            window.location.href = 'delete.php?id=' + id;
-        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: 'delete?id=' + id,
+                    type: 'GET',
+                    success: function(response) {
+                        if(response.status === 'success') {
+                            Swal.fire(
+                                'Deleted!',
+                                response.message,
+                                'success'
+                            ).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'Error: ' + response.message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Error!',
+                            'An error occurred while deleting the record.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
     }
     </script>
 </head>
@@ -149,6 +190,9 @@ $totalVacancies = $totalVacanciesRow['total_vacancies'];
     </nav>
 
     <div class="container">
+        <?php if (isset($_GET['msg']) && $_GET['msg'] == 'deleted'): ?>
+            <div class="alert alert-success mt-4 text-center">Record deleted successfully!</div>
+        <?php endif; ?>
         <!-- Display Total Vacancies -->
         <div class="row mt-4 justify-content-center">
             <div class="col-md-4 text-center">

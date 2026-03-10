@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result->num_rows == 1) {
         $_SESSION['login_user'] = 'admin';
-        header("location: demo1.php");
+        header("location: demo1");
     } else {
         $error = "Invalid username or password";
     }
@@ -27,6 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Admin Login</title>
+    <link rel="icon" type="image/png" href="obc_logo-1.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
