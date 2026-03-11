@@ -1,10 +1,11 @@
 Options +FollowSymLinks -MultiViews
 RewriteEngine On
 
-# Redirect home to index
-RewriteRule ^home$ index [L,R=301]
+# Redirect /file.php to /file
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+(.*)\.php[\s?] [NC]
+RewriteRule ^ /%1 [L,R=301]
 
-# Map clean URLs to .php files internally
+# Internally map /file to /file.php
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.*)$ $1.php [NC,L]

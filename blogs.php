@@ -182,7 +182,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="blogs.php">Blogs</a>
+                    <a class="nav-link" href="blogs">Blogs</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="privatejobportal">Private Job Portals</a>
@@ -246,7 +246,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="text-center">Contact Us</div>
     </div>
     <div class="w-50 m-auto">
-        <form action="blogs.php" method="post">
+        <form action="blogs" method="post">
             <div class="form-group">
                 <label>Name:</label>
                 <input type="text" name="name" class="form-control">

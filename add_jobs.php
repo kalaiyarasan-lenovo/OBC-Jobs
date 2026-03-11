@@ -4,7 +4,7 @@ include("config/config_db.php");
 
 // Check if the user is logged in as admin
 if (!isset($_SESSION['login_user']) || $_SESSION['login_user'] != 'admin') {
-    header("location: login.php");
+    header("location: login");
     exit();
 }
 
@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               VALUES ('$name', '$vacancies', '$description', '$place_of_posting', '$education_qualification', '$selection_process', '$app_fee', '$type', '$age_limits', '$start_age', '$end_age', '$from_date', '$to_date', '$official_website', '$how_to_apply')";
 
     if (mysqli_query($conn, $query)) {
-        header("Location: demo1.php");
+        header("Location: demo1");
     } else {
         echo "Error: " . $query . mysqli_error($conn);
     }
@@ -72,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="container">
         <h3 class="text-center font-weight-bold my-4">Add New Job</h3>
-        <form class="form-horizontal w-100" action="add_jobs.php" method="POST">
+        <form class="form-horizontal w-100" action="add_jobs" method="POST">
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="name">Organization Name</label>
@@ -149,5 +149,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </form>
     </div>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
+            <span class="text-muted">Powered by jobs.obcrights</span>
+        </div>
+    </footer>
 </body>
 </html>

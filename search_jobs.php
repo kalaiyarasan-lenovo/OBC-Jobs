@@ -13,6 +13,7 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
     <title>Jobs</title>
     <link rel="icon" type="image/png" href="obc_logo-1.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
     <style>
@@ -124,15 +125,55 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
         $('#jobsTable').DataTable({"order": []});
 
         // Clickable row functionality
-        $(document).on('click', '.clickable-row', function() {
+        $(document).on('click', '.clickable-row', function(e) {
+            if ($(e.target).closest('a, button').length) {
+                return;
+            }
             window.location = $(this).data("href");
         });
     });
 
     function deleteRecord(id) {
-        if (confirm('Are you sure you want to delete this record?')) {
-            window.location.href = 'delete.php?id=' + id;
-        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: 'delete?id=' + id,
+                    type: 'GET',
+                    success: function(response) {
+                        if(response.status === 'success') {
+                            Swal.fire(
+                                'Deleted!',
+                                response.message,
+                                'success'
+                            ).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'Error: ' + response.message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Error!',
+                            'An error occurred while deleting the record.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
     }
     </script>
 </head>
@@ -151,7 +192,7 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
                     <a class="nav-link" href="#">Home</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="search_jobs.php">Jobs</a>
+                    <a class="nav-link" href="search_jobs">Jobs</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">About</a>
@@ -165,9 +206,12 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
     </nav>
 
     <div class="container">
+        <?php if (isset($_GET['msg']) && $_GET['msg'] == 'deleted'): ?>
+            <div class="alert alert-success mt-4 text-center">Record deleted successfully!</div>
+        <?php endif; ?>
         <h3 class="text-center font-weight-bold my-4">Search Jobs</h3>
         <div class="row mt-4">
-            <form class="form-horizontal w-100" action="search_jobs.php" method="POST">
+            <form class="form-horizontal w-100" action="search_jobs" method="POST">
                 <div class="form-row align-items-end">
                     <div class="form-group col-md-4">
                         <label for="type">Job Type</label>
@@ -267,7 +311,8 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
     <!-- Footer -->
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container text-center">
-            <span class="text-muted">© 2026 Jobs Portal. All rights reserved.</span>
+            <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
+            <span class="text-muted">Powered by jobs.obcrights</span>
         </div>
     </footer>
 </body>

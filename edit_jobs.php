@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $updateQuery->bind_param("sisssssssssssssi", $name, $vacancies, $description, $place_of_posting, $education_qualification, $selection_process, $app_fee, $type, $age_limits, $start_age, $end_age, $from_date, $to_date, $official_website, $how_to_apply, $id);
 
     if ($updateQuery->execute()) {
-        header("Location: demo1.php");
+        header("Location: demo1");
         exit();
     } else {
         echo "Error: " . $updateQuery->error;
@@ -56,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Edit Job</title>
+    <link rel="icon" type="image/png" href="obc_logo-1.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
@@ -63,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <h3 class="text-center font-weight-bold my-4">Edit Job</h3>
         <div class="row">
             <div class="col-md-12">
-                <form action="edit_jobs.php?id=<?php echo $id; ?>" method="POST">
+                <form action="edit_jobs?id=<?php echo $id; ?>" method="POST">
                     <div class="form-group">
                         <label for="name">Organization Name</label>
                         <input type="text" name="name" id="name" class="form-control" value="<?php echo htmlspecialchars($row['name']); ?>" required>
@@ -128,10 +129,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <label for="how_to_apply">How to Apply</label>
                         <textarea name="how_to_apply" id="how_to_apply" class="form-control" rows="5" required><?php echo htmlspecialchars($row['how_to_apply']); ?></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Update Job</button>
+                    <div class="text-center mt-3 d-flex justify-content-center">
+                        <a href="demo1" class="btn btn-secondary btn-sm px-4 mr-3">Back</a>
+                        <button type="submit" class="btn btn-primary btn-sm px-4">Update Job</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">Copyright © 2026 [obcrights]</span><br>
+            <span class="text-muted">Powered by jobs.obcrights</span>
+        </div>
+    </footer>
 </body>
 </html>

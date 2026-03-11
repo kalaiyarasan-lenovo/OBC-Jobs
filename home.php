@@ -41,8 +41,8 @@ if (count($conditions) > 0) {
 // Order by deadline: 0-4 days remaining first, then other future, then past
 $query .= " ORDER BY 
     CASE 
-        WHEN to_date >= CURDATE() AND DATEDIFF(to_date, CURDATE()) <= 4 THEN 1
-        WHEN to_date >= CURDATE() THEN 2
+        WHEN to_date >= '$current_date' AND DATEDIFF(to_date, '$current_date') <= 4 THEN 1
+        WHEN to_date >= '$current_date' THEN 2
         ELSE 3
     END ASC, 
     to_date ASC";
