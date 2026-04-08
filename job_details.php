@@ -153,6 +153,105 @@ function formatText($text) {
             margin-bottom: 0;
         }
 
+        /* Premium Job Details Box */
+        .details-wrapper {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #eff2f5;
+        }
+        .details-table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            border: 1px solid #e1e5eb;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .details-table th, .details-table td {
+            padding: 18px 20px;
+            border-bottom: 1px solid #e1e5eb;
+            border-right: 1px solid #e1e5eb;
+            font-size: 15px;
+        }
+        .details-table th {
+            width: 35%;
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+        .details-table td {
+            color: #495057;
+            background-color: #ffffff;
+            line-height: 1.6;
+        }
+        .details-table tr:last-child th,
+        .details-table tr:last-child td {
+            border-bottom: none;
+        }
+        .details-table th:last-child,
+        .details-table td:last-child {
+            border-right: none;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        /* Print Specific CSS */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .container, .container * {
+                visibility: visible;
+            }
+            .container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .action-buttons, .navbar, .footer {
+                display: none !important;
+            }
+            .details-wrapper {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+            }
+            .details-table {
+                border: 1px solid #000;
+            }
+            .details-table th, .details-table td {
+                border-color: #000;
+            }
+            .watermark {
+                visibility: visible !important;
+                display: block !important;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(-45deg);
+                font-size: 80px;
+                color: rgba(0, 0, 0, 0.08) !important;
+                white-space: nowrap;
+                z-index: 1000;
+                pointer-events: none;
+                text-align: center;
+                width: 100%;
+            }
+        }
+
+        /* Watermark hidden on screen */
+        .watermark {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -207,7 +306,8 @@ function formatText($text) {
     <h3 class="text-center font-weight-bold my-4">Job Details</h3>
     <div class="row">
         <div class="col-md-12">
-            <table class="table table-bordered">
+            <div class="details-wrapper">
+                <table class="details-table">
                 <tr>
                     <th>Organization Name</th>
                     <td><?php echo formatText($row['name']); ?></td>
@@ -332,8 +432,12 @@ function formatText($text) {
                         </ul>
                     </td>
                 </tr>
-            </table>
-            <a href="index" class="btn btn-secondary">Back</a>
+                </table>
+                <div class="action-buttons">
+                    <button onclick="window.print()" class="btn btn-primary font-weight-bold px-4"><i class="fas fa-print"></i> Print Details</button>
+                    <a href="index" class="btn btn-secondary font-weight-bold px-4"><i class="fas fa-arrow-left"></i> Back</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -343,5 +447,9 @@ function formatText($text) {
         <span class="text-muted">Powered by jobs.obcrights</span>
     </div>
 </footer>
+
+<!-- Print Watermark -->
+<div class="watermark">jobs.obcrights.org</div>
+
 </body>
 </html>

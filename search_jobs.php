@@ -113,6 +113,51 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
         .clickable-row {
             cursor: pointer;
         }
+
+        /* Premium Table Design */
+        .table-responsive-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            padding: 20px;
+            border: 1px solid #eff2f5;
+            margin-bottom: 30px;
+        }
+
+        #jobsTable {
+            width: 100% !important;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: none;
+        }
+        #jobsTable thead th {
+            background-color: #343a40; /* Dark premium header */
+            color: #ffffff;
+            font-weight: 700;
+            text-transform: capitalize;
+            font-size: 14px;
+            border-bottom: 2px solid #23272b !important;
+            border-top: none !important;
+            padding: 16px 15px;
+        }
+        #jobsTable tbody td {
+            padding: 16px 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f2f5;
+            color: #495057;
+            font-size: 14.5px;
+        }
+        #jobsTable tbody tr {
+            transition: all 0.3s ease;
+        }
+        #jobsTable tbody tr:hover {
+            background-color: #f8fbff !important;
+            box-shadow: 0 3px 10px rgba(0,123,255,0.08);
+            transform: translateY(-1px);
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
@@ -267,9 +312,10 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
         </div>
 
         <div class="row mt-4">
-            <table id="jobsTable" class="table table-striped table-hover w-100">
-                <thead>
-                    <tr>
+            <div class="table-responsive-wrapper">
+                <table id="jobsTable" class="table w-100">
+                    <thead>
+                        <tr>
                         <th>ID</th>
                         <th>Organization</th>
                         <th>Vacancies</th>
@@ -304,7 +350,8 @@ $logged_in_as_admin = isset($_SESSION['login_user']) && $_SESSION['login_user'] 
                 }
                 ?>
                 </tbody>
-            </table>
+                </table>
+            </div>
         </div>
     </div>
 

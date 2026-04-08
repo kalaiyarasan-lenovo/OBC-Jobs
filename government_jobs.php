@@ -81,11 +81,22 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
 
         .navbar-center {
             position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 40px;
-            font-family: monospace;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
             color: azure;
+            pointer-events: none;
+            z-index: 1;
+            margin: 0;
+        }
+
+        .navbar-brand,
+        .navbar-toggler,
+        .navbar-collapse {
+            position: relative;
+            z-index: 2;
         }
 
         .nav-item {
@@ -120,6 +131,51 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
 
         .clickable-row {
             cursor: pointer;
+        }
+
+        /* Premium Table Design */
+        .table-responsive-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            padding: 20px;
+            border: 1px solid #eff2f5;
+            margin-bottom: 30px;
+        }
+
+        #jobsTable {
+            width: 100% !important;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: none;
+        }
+        #jobsTable thead th {
+            background-color: #343a40; /* Dark premium header */
+            color: #ffffff;
+            font-weight: 700;
+            text-transform: capitalize;
+            font-size: 14px;
+            border-bottom: 2px solid #23272b !important;
+            border-top: none !important;
+            padding: 16px 15px;
+        }
+        #jobsTable tbody td {
+            padding: 16px 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f2f5;
+            color: #495057;
+            font-size: 14.5px;
+        }
+        #jobsTable tbody tr {
+            transition: all 0.3s ease;
+        }
+        #jobsTable tbody tr:hover {
+            background-color: #f8fbff !important;
+            box-shadow: 0 3px 10px rgba(0,123,255,0.08);
+            transform: translateY(-1px);
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -231,52 +287,55 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
 
     <div class="container">
         <!-- Filter Form -->
-        <div class="row mt-4">
-            <form class="form-horizontal w-100" action="government_jobs" method="POST">
-                <div class="form-row align-items-end justify-content-center">
-                    <div class="form-group col-md-4">
-                        <label for="type">Job Type</label>
-                        <select name="type" id="type" class="form-control">
-                            <option value="">All Government Jobs</option>
-                            <option value="Central Govt Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'Central Govt Jobs') echo 'selected'; ?>>Central Govt Jobs</option>
-                            <option value="State Govt Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'State Govt Jobs') echo 'selected'; ?>>State Govt Jobs</option>
-                        </select>
+        <div class="row mt-4 justify-content-center">
+            <div class="col-lg-10">
+                <form class="form-horizontal" action="government_jobs" method="POST">
+                    <div class="form-row align-items-end justify-content-center">
+                        <div class="form-group col-md-4">
+                            <label for="type" class="font-weight-bold">Job Type</label>
+                            <select name="type" id="type" class="form-control">
+                                <option value="">All Government Jobs</option>
+                                <option value="Central Govt Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'Central Govt Jobs') echo 'selected'; ?>>Central Govt Jobs</option>
+                                <option value="State Govt Jobs" <?php if (isset($_POST['type']) && $_POST['type'] == 'State Govt Jobs') echo 'selected'; ?>>State Govt Jobs</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="age" class="font-weight-bold">Age</label>
+                            <input type="number" name="age" id="age" class="form-control" value="<?php echo isset($_POST['age']) ? htmlspecialchars($_POST['age']) : ''; ?>">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <button type="submit" name="submit" class="btn btn-red btn-block">Filter</button>
+                        </div>
+                        <?php if (isset($_POST['submit'])): ?>
+                        <div class="form-group col-md-2">
+                            <a href="government_jobs" class="btn btn-secondary btn-block">Reset</a>
+                        </div>
+                        <?php endif; ?>
                     </div>
-                    <div class="form-group col-md-3">
-                        <label for="age">Age</label>
-                        <input type="number" name="age" id="age" class="form-control" value="<?php echo isset($_POST['age']) ? htmlspecialchars($_POST['age']) : ''; ?>">
-                    </div>
-                    <div class="form-group col-md-2">
-                        <button type="submit" name="submit" class="btn btn-red btn-block">Filter</button>
-                    </div>
-                    <?php if (isset($_POST['submit'])): ?>
-                    <div class="form-group col-md-2">
-                        <a href="government_jobs" class="btn btn-secondary btn-block">Reset</a>
-                    </div>
-                    <?php endif; ?>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
 
         <div class="row mt-4 justify-content-center">
-            <div class="col-md-4 text-center">
-                <a href="central_gov_jobs" class="btn btn-light-gray btn-block">
-                    <b>Total Central Govt Vacancies:
+            <div class="col-md-5 mb-2">
+                <a href="central_gov_jobs" class="btn btn-light-gray btn-block h-100 d-flex align-items-center justify-content-center py-3">
+                    <b>Total Central Govt Vacancies: &nbsp;
                         <span><?php echo htmlspecialchars($totalCentralVacancies); ?></span></b>
                 </a>
             </div>
-            <div class="col-md-4 text-center">
-                <a href="state_jobs" class="btn btn-light-gray btn-block">
-                    <b>Total State Govt Vacancies:
+            <div class="col-md-5 mb-2">
+                <a href="state_jobs" class="btn btn-light-gray btn-block h-100 d-flex align-items-center justify-content-center py-3">
+                    <b>Total State Govt Vacancies: &nbsp;
                         <span><?php echo htmlspecialchars($totalStateVacancies); ?></span></b>
                 </a>
             </div>
         </div>
 
         <div class="row mt-4">
-            <table id="jobsTable" class="table table-striped table-hover w-100">
-                <thead>
-                    <tr>
+            <div class="table-responsive-wrapper">
+                <table id="jobsTable" class="table w-100">
+                    <thead>
+                        <tr>
                         <th>ID</th>
                         <th>Organization</th>
                         <th>Vacancies</th>
@@ -304,7 +363,8 @@ $totalStateVacancies = $stateVacanciesRow['total_state_vacancies'] ?? 0;
                         </tr>
                     <?php } ?>
                 </tbody>
-            </table>
+                </table>
+            </div>
         </div>
     </div>
     <footer class="footer mt-auto py-3 bg-light">

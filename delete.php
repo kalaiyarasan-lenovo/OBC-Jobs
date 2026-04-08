@@ -1,7 +1,14 @@
 <?php
+session_start();
 include("config/config_db.php");
 
 header('Content-Type: application/json'); // Set the Content-Type to JSON
+
+// Check if user is logged in as admin
+if (!isset($_SESSION['login_user']) || $_SESSION['login_user'] != 'admin') {
+    echo json_encode(['status' => 'error', 'message' => 'Admin login required to delete.']);
+    exit();
+}
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
